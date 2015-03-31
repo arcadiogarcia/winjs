@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 // <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
@@ -27,8 +27,6 @@ module CorsicaTests {
                 LiveUnit.Assert.isTrue(typeof (overlay[functionName]) === "function", functionName + " exists on Overlay, but it isn't a function");
             }
 
-            verifyFunction("show");
-            verifyFunction("hide");
             verifyFunction("addEventListener");
             verifyFunction("removeEventListener");
         }
@@ -101,29 +99,6 @@ module CorsicaTests {
             LiveUnit.Assert.areEqual(overlay.element, overlayElement, "Verifying that element is what we set it with");
             LiveUnit.Assert.areEqual(overlay.autoHide, undefined, "Verifying that autoHide is undefined");
             LiveUnit.Assert.areEqual(overlay.lightDismiss, undefined, "Verifying that lightDismiss is undefined");
-        }
-
-    // Simple Function Tests
-    testSimpleOverlayFunctions = function () {
-            // Get the Overlay element from the DOM
-            var overlayElement = document.createElement("div");
-            document.body.appendChild(overlayElement);
-            LiveUnit.LoggingCore.logComment("Attempt to Instantiate the Overlay element");
-            var overlay = new WinJS.UI._Overlay(overlayElement);
-            LiveUnit.LoggingCore.logComment("Overlay has been instantiated.");
-            LiveUnit.Assert.isNotNull(overlay, "Overlay element should not be null when instantiated.");
-
-            LiveUnit.LoggingCore.logComment("show");
-            overlay.show();
-
-            LiveUnit.LoggingCore.logComment("hide");
-            overlay.hide();
-
-            LiveUnit.LoggingCore.logComment("addEventListener");
-            overlay.addEventListener();
-
-            LiveUnit.LoggingCore.logComment("removeEventListener");
-            overlay.removeEventListener();
         }
 
     testOverlayDispose = function () {

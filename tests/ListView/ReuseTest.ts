@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 // <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
 /// <reference path="../TestLib/Helper.ListView.ts" />
@@ -255,7 +255,6 @@ module WinJSTests {
             newItems = 0;
             disposedItemsCount = 0;
             disposedItems = [];
-            Helper.ListView.removeListviewAnimations();
         }
 
         tearDown() {
@@ -263,7 +262,6 @@ module WinJSTests {
 
             WinJS.Utilities.disposeSubTree(testRootEl);
             document.body.removeChild(testRootEl);
-            Helper.ListView.restoreListviewAnimations();
         }
 
         // Ensures dispose is called due to the following data source changes:

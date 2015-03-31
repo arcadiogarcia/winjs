@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 (function () {
     "use strict";
 
@@ -25,7 +25,6 @@
 
             var requirejs = grunt.config.get("requirejs");
 
-            var pkgRoot = "node_modules/winjs-modules/";
             var requireConfig = {
                 baseUrl: ".",
                 name: "WinJS-custom",
@@ -36,12 +35,6 @@
                 wrap: {
                     start: requirejs.header("WinJS-custom", []),
                     end: requirejs.footer("WinJS-custom"),
-                },
-                paths: {
-                    "amd": pkgRoot + "amd",
-                    "require-style": pkgRoot + "require-style",
-                    "require-json": pkgRoot + "require-json",
-                    "WinJS": pkgRoot + "WinJS"
                 },
                 findNestedDependencies: true
             };

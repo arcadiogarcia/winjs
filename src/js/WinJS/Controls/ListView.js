@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 define([
     '../Core/_Global',
     '../Core/_Base',
@@ -8,6 +8,7 @@ define([
     '../Core/_Log',
     '../Core/_Resources',
     '../Core/_WriteProfilerMark',
+    '../Animations',
     '../Animations/_TransitionAnimation',
     '../BindingList',
     '../Promise',
@@ -35,7 +36,7 @@ define([
     './ListView/_VirtualizeContentsView',
     'require-style!less/styles-listview',
     'require-style!less/colors-listview'
-], function listViewImplInit(_Global, _Base, _BaseUtils, _ErrorFromName, _Events, _Log, _Resources, _WriteProfilerMark, _TransitionAnimation, BindingList, Promise, Scheduler, _Signal, _Control, _Dispose, _ElementUtilities, _Hoverable, _ItemsManager, _SafeHtml, _TabContainer, _UI, _VersionManager, _Constants, _ItemEventsHandler, _BrowseMode, _ErrorMessages, _GroupFocusCache, _GroupsContainer, _Helpers, _ItemsContainer, _Layouts, _SelectionManager, _VirtualizeContentsView) {
+], function listViewImplInit(_Global, _Base, _BaseUtils, _ErrorFromName, _Events, _Log, _Resources, _WriteProfilerMark, Animations, _TransitionAnimation, BindingList, Promise, Scheduler, _Signal, _Control, _Dispose, _ElementUtilities, _Hoverable, _ItemsManager, _SafeHtml, _TabContainer, _UI, _VersionManager, _Constants, _ItemEventsHandler, _BrowseMode, _ErrorMessages, _GroupFocusCache, _GroupsContainer, _Helpers, _ItemsContainer, _Layouts, _SelectionManager, _VirtualizeContentsView) {
     "use strict";
 
     var transformNames = _BaseUtils._browserStyleEquivalents["transform"];
@@ -66,8 +67,6 @@ define([
     function getOffsetRight(element) {
         return element.offsetParent ? (element.offsetParent.offsetWidth - element.offsetLeft - element.offsetWidth) : 0;
     }
-
-    var AnimationHelper = _Helpers._ListViewAnimationHelper;
 
     var strings = {
         get notCompatibleWithSemanticZoom() { return "ListView can only be used with SemanticZoom if randomAccess loading behavior is specified."; },
@@ -3084,7 +3083,9 @@ define([
 
                 _setViewState: function ListView_setViewState(state) {
                     if (state !== this._loadingState) {
-                        var detail = null;
+                        var detail = {
+                            scrolling: false
+                        };
                         // We can go from any state to itemsLoading but the rest of the states transitions must follow this
                         // order: itemsLoading -> viewPortLoaded -> itemsLoaded -> complete.
                         // Recursively set the previous state until you hit the current state or itemsLoading.
@@ -3184,7 +3185,7 @@ define([
                         this._progressIndicatorDelayTimer = Promise.timeout(_Constants._LISTVIEW_PROGRESS_DELAY).then(function () {
                             if (!that._isZombie()) {
                                 parent.appendChild(progressBar);
-                                AnimationHelper.fadeInElement(progressBar);
+                                Animations.fadeIn(progressBar);
                                 that._progressIndicatorDelayTimer = null;
                             }
                         });
@@ -3203,7 +3204,7 @@ define([
                     if (progressBar.parentNode && !this._fadingProgressBar) {
                         this._fadingProgressBar = true;
                         var that = this;
-                        AnimationHelper.fadeOutElement(progressBar).then(function () {
+                        Animations.fadeOut(progressBar).then(function () {
                             if (progressBar.parentNode) {
                                 progressBar.parentNode.removeChild(progressBar);
                             }
@@ -3737,22 +3738,18 @@ define([
                             }
                             var eventDetails = that._fireAnimationEvent(ListViewAnimationType.contentTransition);
                             that._firedAnimationEvent = true;
-                            var overflowStyle = _BaseUtils._browserStyleEquivalents["overflow-style"];
-                            var animatedElement = overflowStyle ? that._viewport : that._canvas;
                             if (!eventDetails.prevented) {
                                 that._fadingViewportOut = true;
-                                if (overflowStyle) {
-                                    animatedElement.style[overflowStyle.scriptName] = "none";
-                                }
-                                AnimationHelper.fadeOutElement(animatedElement).then(function () {
+                                that._viewport.style.overflow = "hidden";
+                                Animations.fadeOut(that._viewport).then(function () {
                                     if (that._isZombie()) { return; }
                                     that._fadingViewportOut = false;
-                                    animatedElement.style.opacity = 1.0;
+                                    that._viewport.style.opacity = 1.0;
                                     complete();
                                 });
                             } else {
                                 that._disableEntranceAnimation = true;
-                                animatedElement.style.opacity = 1.0;
+                                that._viewport.style.opacity = 1.0;
                                 complete();
                             }
                         }
@@ -3765,16 +3762,12 @@ define([
                         animationPromise: Promise.wrap()
                     };
                     var that = this;
-                    var overflowStyle = _BaseUtils._browserStyleEquivalents["overflow-style"];
-                    var animatedElement = overflowStyle ? this._viewport : this._canvas;
                     this._raiseHeaderFooterVisibilityEvent();
                     function resetViewOpacity() {
                         that._canvas.style.opacity = 1;
                         that._headerContainer.style.opacity = 1;
                         that._footerContainer.style.opacity = 1;
-                        if (overflowStyle) {
-                            animatedElement.style[overflowStyle.scriptName] = "";
-                        }
+                        that._viewport.style.overflow = "";
                         that._raiseHeaderFooterVisibilityEvent();
                     }
 
@@ -3802,30 +3795,17 @@ define([
                             this._waitingEntranceAnimationPromise.cancel();
                         }
                         this._canvas.style.opacity = 0;
-                        if (overflowStyle) {
-                            animatedElement.style[overflowStyle.scriptName] = "none";
-                        }
+                        this._viewport.style.overflow = "hidden";
                         this._headerContainer.style.opacity = 1;
                         this._footerContainer.style.opacity = 1;
                         this._waitingEntranceAnimationPromise = eventDetails.animationPromise.then(function () {
                             if (!that._isZombie()) {
                                 that._canvas.style.opacity = 1;
-                                var animatedElements = [animatedElement];
-                                if (animatedElement !== that._viewport) {
-                                    if (that._header) {
-                                        animatedElements.push(that._headerContainer);
-                                    }
-                                    if (that._footer) {
-                                        animatedElements.push(that._footerContainer);
-                                    }
-                                }
 
-                                return AnimationHelper.animateEntrance(animatedElements, firstTime).then(function () {
+                                return Animations.enterContent(that._viewport).then(function () {
                                     if (!that._isZombie()) {
                                         that._waitingEntranceAnimationPromise = null;
-                                        if (overflowStyle) {
-                                            animatedElement.style[overflowStyle.scriptName] = "";
-                                        }
+                                        that._viewport.style.overflow = "";
                                     }
                                 });
                             }
@@ -4163,7 +4143,27 @@ define([
                 _updateContainers: function ListView_updateContainers(groups, count, containersDelta, modifiedElements) {
                     var that = this;
 
-                    var maxContainers = this._view.containers.length + (containersDelta > 0 ? containersDelta : 0);
+                    // If the ListView is still in the middle of asynchronously creating containers (i.e. createContainersWorker isn't done),
+                    // then we need to cap the number of containers we create here. Without the cap, we'll synchronously finish creating all
+                    // of the containers nullifying the responsiveness benefits of the asynchronous create containers worker. However, if
+                    // the worker has already finished, there's no need for the cap.
+                    var containerCountAfterEdits = this._view.containers.length + containersDelta;
+                    var asyncContainerCreationInProgress = containerCountAfterEdits < count;
+                    var maxContainers;
+                    if (asyncContainerCreationInProgress) {
+                        // Just create enough containers to handle the edits in the realized range. We need to create at least
+                        // this many containers so that we can play the edit animations.
+                        var countInsertedInRealizedRange = 0;
+                        for (var i = 0; i < modifiedElements.length; i++) {
+                            if (modifiedElements[i].oldIndex === -1) {
+                                countInsertedInRealizedRange++;
+                            }
+                        }
+                        maxContainers = this._view.containers.length + countInsertedInRealizedRange;
+                    } else {
+                        // Create enough containers for every item in the data source.
+                        maxContainers = count;
+                    }
 
                     var newTree = [];
                     var newKeyToGroupIndex = {};

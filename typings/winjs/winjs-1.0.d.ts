@@ -5,17 +5,12 @@
 
 /* *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ""Software""), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ***************************************************************************** */
 
 /**
@@ -360,13 +355,13 @@ declare module WinJS.Binding {
     /**
      * Do not instantiate. Sorts the underlying list by group key and within a group respects the position of the item in the underlying list. Returned by createGrouped.
     **/
-    class GroupedSortedListProjection<T> extends SortedListProjection<T> {
+    class GroupedSortedListProjection<T, G> extends SortedListProjection<T> {
         //#region Properties
 
         /**
          * Gets a List, which is a projection of the groups that were identified in this list.
         **/
-        groups: GroupsListProjection<T>;
+        groups: GroupsListProjection<G>;
 
         //#endregion Properties
 
@@ -553,7 +548,7 @@ declare module WinJS.Binding {
          * @param groupSorter A function that accepts two arguments. The function is called with pairs of group keys found in the list. It must return one of the following numeric values: negative if the first argument is less than the second (sorted before), zero if the two arguments are equivalent, positive if the first argument is greater than the second (sorted after).
          * @returns A grouped projection over the list.
         **/
-        createGrouped(groupKey: (x: T) => string, groupData: (x: T) => any, groupSorter?: (left: string, right: string) => number): GroupedSortedListProjection<T>;
+        createGrouped<G>(groupKey: (x: T) => string, groupData: (x: T) => G, groupSorter?: (left: string, right: string) => number): GroupedSortedListProjection<T, G>;
 
         /**
          * Creates a live sorted projection over this list. As the list changes, the sorted projection reacts to those changes and may also change.

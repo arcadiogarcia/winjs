@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 // <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
 /// <reference path="../TestLib/Helper.ts" />
@@ -37,7 +37,6 @@ module WinJSTests {
             var root = addNode(sezoRootId);
             addNode(zoomedInListViewId, root);
             addNode(zoomedOutListViewId, root);
-            Helper.ListView.removeListviewAnimations();
 
             //WinBlue: 298587
             _oldMaxTimePerCreateContainers = WinJS.UI._VirtualizeContentsView._maxTimePerCreateContainers;
@@ -54,7 +53,6 @@ module WinJSTests {
             removeNode(zoomedOutListViewId);
             removeNode(zoomedInListViewId);
             removeNode(sezoRootId);
-            Helper.ListView.restoreListviewAnimations();
         }
 
     };

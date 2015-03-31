@@ -1,11 +1,11 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-import _Global = require("../Core/_Global");
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
+import _Global = require("./Core/_Global");
 
-import _Base = require("../Core/_Base");
-import _BaseUtils = require("../Core/_BaseUtils");
-import _ElementUtilities = require("../Utilities/_ElementUtilities");
-import _Events = require("../Core/_Events");
-import _OptionsParser = require("../ControlProcessor/_OptionsParser");
+import _Base = require("./Core/_Base");
+import _BaseUtils = require("./Core/_BaseUtils");
+import _ElementUtilities = require("./Utilities/_ElementUtilities");
+import _Events = require("./Core/_Events");
+import _OptionsParser = require("./ControlProcessor/_OptionsParser");
 
 "use strict";
 
@@ -48,7 +48,7 @@ var FocusableTagNames = [
     "TEXTAREA"
 ];
 
-// These factors can be tweaked to adjust which elements are favored by the focus algorithm  
+// These factors can be tweaked to adjust which elements are favored by the focus algorithm
 var ScoringConstants = {
     primaryAxisDistanceWeight: 30,
     secondaryAxisDistanceWeight: 20,
@@ -102,7 +102,7 @@ export interface IRect {
 
 /**
  * Gets the mapping object that maps keycodes to XYFocus actions.
-**/ 
+**/
 export var keyCodeMap: { [key: string]: number[] } = {
     left: [_ElementUtilities.Key.leftArrow],
     right: [_ElementUtilities.Key.rightArrow],
@@ -201,12 +201,7 @@ function _xyFocus(direction: string, keyCode: number, referenceRect?: IRect): bo
 
     if (result && _trySetFocus(result.target, keyCode)) {
         // A focus target was found
-        if (result.usedOverride) {
-            // Reset history since the override target could be anywhere
-            _historyRect = null;
-        } else {
-            updateHistoryRect(direction, result);
-        }
+        updateHistoryRect(direction, result);
         _lastTarget = result.target;
         _cachedLastTargetRect = result.targetRect;
 
@@ -259,20 +254,20 @@ function _xyFocus(direction: string, keyCode: number, referenceRect?: IRect): bo
         var newHistoryRect = _defaultRect();
 
         // It's possible to get into a situation where the target element has no overlap with the reference edge.
-        //  
-        //..╔══════════════╗..........................  
-        //..║   reference  ║..........................  
-        //..╚══════════════╝..........................  
-        //.....................╔═══════════════════╗..  
-        //.....................║                   ║..  
-        //.....................║       target      ║..  
-        //.....................║                   ║..  
-        //.....................╚═══════════════════╝..  
-        //  
-        // If that is the case, we need to reset the coordinates to the edge of the target element.  
+        //
+        //..╔══════════════╗..........................
+        //..║   reference  ║..........................
+        //..╚══════════════╝..........................
+        //.....................╔═══════════════════╗..
+        //.....................║                   ║..
+        //.....................║       target      ║..
+        //.....................║                   ║..
+        //.....................╚═══════════════════╝..
+        //
+        // If that is the case, we need to reset the coordinates to the edge of the target element.
         if (direction === DirectionNames.left || direction === DirectionNames.right) {
-            newHistoryRect.top = _Global.Math.max(result.targetRect.top, result.referenceRect.top, _historyRect ? _historyRect.top : Number.MIN_VALUE);
-            newHistoryRect.bottom = _Global.Math.min(result.targetRect.bottom, result.referenceRect.bottom, _historyRect ? _historyRect.bottom : Number.MAX_VALUE);
+            newHistoryRect.top = Math.max(result.targetRect.top, result.referenceRect.top, _historyRect ? _historyRect.top : Number.MIN_VALUE);
+            newHistoryRect.bottom = Math.min(result.targetRect.bottom, result.referenceRect.bottom, _historyRect ? _historyRect.bottom : Number.MAX_VALUE);
             if (newHistoryRect.bottom <= newHistoryRect.top) {
                 newHistoryRect.top = result.targetRect.top;
                 newHistoryRect.bottom = result.targetRect.bottom;
@@ -283,8 +278,8 @@ function _xyFocus(direction: string, keyCode: number, referenceRect?: IRect): bo
             newHistoryRect.left = Number.MIN_VALUE;
             newHistoryRect.right = Number.MAX_VALUE;
         } else {
-            newHistoryRect.left = _Global.Math.max(result.targetRect.left, result.referenceRect.left, _historyRect ? _historyRect.left : Number.MIN_VALUE);
-            newHistoryRect.right = _Global.Math.min(result.targetRect.right, result.referenceRect.right, _historyRect ? _historyRect.right : Number.MAX_VALUE);
+            newHistoryRect.left = Math.max(result.targetRect.left, result.referenceRect.left, _historyRect ? _historyRect.left : Number.MIN_VALUE);
+            newHistoryRect.right = Math.min(result.targetRect.right, result.referenceRect.right, _historyRect ? _historyRect.right : Number.MAX_VALUE);
             if (newHistoryRect.right <= newHistoryRect.left) {
                 newHistoryRect.left = result.targetRect.left;
                 newHistoryRect.right = result.targetRect.right;
@@ -304,7 +299,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
     options.focusRoot = options.focusRoot || focusRoot || _Global.document.body;
     options.historyRect = options.historyRect || _defaultRect();
 
-    var maxDistance = _Global.Math.max(_Global.screen.availHeight, _Global.screen.availWidth);
+    var maxDistance = Math.max(_Global.screen.availHeight, _Global.screen.availWidth);
     var refObj = getReferenceObject(options.referenceElement, options.referenceRect);
 
     // Handle override
@@ -327,7 +322,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
                     if (target === _Global.document.activeElement) {
                         return null;
                     }
-                    return { target: target, targetRect: _toIRect(target.getBoundingClientRect()), referenceRect: null, usedOverride: true };
+                    return { target: target, targetRect: _toIRect(target.getBoundingClientRect()), referenceRect: refObj.rect, usedOverride: true };
                 }
             }
         }
@@ -349,7 +344,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
 
         var potentialRect = _toIRect(potentialElement.getBoundingClientRect());
 
-        // Skip elements that have either a width of zero or a height of zero  
+        // Skip elements that have either a width of zero or a height of zero
         if (potentialRect.width === 0 || potentialRect.height === 0) {
             continue;
         }
@@ -368,13 +363,13 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
 
     // Nested Helpers
     function calculatePercentInShadow(minReferenceCoord: number, maxReferenceCoord: number, minPotentialCoord: number, maxPotentialCoord: number) {
-        /// Calculates the percentage of the potential element that is in the shadow of the reference element.   
+        /// Calculates the percentage of the potential element that is in the shadow of the reference element.
         if ((minReferenceCoord >= maxPotentialCoord) ||
             (maxReferenceCoord <= minPotentialCoord)) {
             return 0;
         }
 
-        var pixelOverlapWithTheReferenceShadow = _Global.Math.min(maxReferenceCoord, maxPotentialCoord) - _Global.Math.max(minReferenceCoord, minPotentialCoord);
+        var pixelOverlapWithTheReferenceShadow = Math.min(maxReferenceCoord, maxPotentialCoord) - Math.max(minReferenceCoord, minPotentialCoord);
         var referenceEdgeLength = maxReferenceCoord - minReferenceCoord;
         return pixelOverlapWithTheReferenceShadow / referenceEdgeLength;
     }
@@ -388,7 +383,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
         var percentInHistoryShadow = 0;
         switch (direction) {
             case DirectionNames.left:
-                // Make sure we don't evaluate any potential elements to the right of the reference element  
+                // Make sure we don't evaluate any potential elements to the right of the reference element
                 if (potentialRect.left >= referenceRect.left) {
                     break;
                 }
@@ -399,13 +394,13 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
                 if (percentInShadow > 0) {
                     percentInHistoryShadow = calculatePercentInShadow(historyRect.top, historyRect.bottom, potentialRect.top, potentialRect.bottom);
                 } else {
-                    // If the potential element is not in the shadow, then we calculate secondary axis distance  
+                    // If the potential element is not in the shadow, then we calculate secondary axis distance
                     secondaryAxisDistance = (referenceRect.bottom <= potentialRect.top) ? (potentialRect.top - referenceRect.bottom) : referenceRect.top - potentialRect.bottom;
                 }
                 break;
 
             case DirectionNames.right:
-                // Make sure we don't evaluate any potential elements to the left of the reference element  
+                // Make sure we don't evaluate any potential elements to the left of the reference element
                 if (potentialRect.right <= referenceRect.right) {
                     break;
                 }
@@ -422,7 +417,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
                 break;
 
             case DirectionNames.up:
-                // Make sure we don't evaluate any potential elements below the reference element  
+                // Make sure we don't evaluate any potential elements below the reference element
                 if (potentialRect.top >= referenceRect.top) {
                     break;
                 }
@@ -439,7 +434,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
                 break;
 
             case DirectionNames.down:
-                // Make sure we don't evaluate any potential elements above the reference element  
+                // Make sure we don't evaluate any potential elements above the reference element
                 if (potentialRect.bottom <= referenceRect.bottom) {
                     break;
                 }
@@ -450,19 +445,19 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
                 if (percentInShadow > 0) {
                     percentInHistoryShadow = calculatePercentInShadow(historyRect.left, historyRect.right, potentialRect.left, potentialRect.right);
                 } else {
-                    // If the potential element is not in the shadow, then we calculate secondary axis distance  
+                    // If the potential element is not in the shadow, then we calculate secondary axis distance
                     secondaryAxisDistance = (referenceRect.right <= potentialRect.left) ? (potentialRect.left - referenceRect.right) : referenceRect.left - potentialRect.right;
                 }
                 break;
         }
 
         if (primaryAxisDistance >= 0) {
-            // The score needs to be a positive number so we make these distances positive numbers  
+            // The score needs to be a positive number so we make these distances positive numbers
             primaryAxisDistance = maxDistance - primaryAxisDistance;
             secondaryAxisDistance = maxDistance - secondaryAxisDistance;
 
             if (primaryAxisDistance >= 0 && secondaryAxisDistance >= 0) {
-                // Potential elements in the shadow get a multiplier to their final score  
+                // Potential elements in the shadow get a multiplier to their final score
                 primaryAxisDistance += primaryAxisDistance * percentInShadow;
 
                 score = primaryAxisDistance * ScoringConstants.primaryAxisDistanceWeight +
@@ -478,9 +473,9 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
         var refRect: IRect;
 
         if ((!referenceElement && !referenceRect) || (referenceElement && !referenceElement.parentNode)) {
-            // Note: We need to check to make sure 'parentNode' is not null otherwise there is a case  
-            // where _lastTarget is defined, but calling getBoundingClientRect will throw a native exception.  
-            // This case happens if the innerHTML of the parent of the _lastTarget is set to "".  
+            // Note: We need to check to make sure 'parentNode' is not null otherwise there is a case
+            // where _lastTarget is defined, but calling getBoundingClientRect will throw a native exception.
+            // This case happens if the innerHTML of the parent of the _lastTarget is set to "".
 
             // If no valid reference is supplied, we'll use _Global.document.activeElement unless it's the body
             if (_Global.document.activeElement !== _Global.document.body) {
@@ -505,7 +500,7 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
     function isFocusable(element: HTMLElement): boolean {
         var elementTagName = element.tagName;
         if (!element.hasAttribute("tabindex") && FocusableTagNames.indexOf(elementTagName) === -1 && !_ElementUtilities.hasClass(element, ClassNames.focusable)) {
-            // If the current potential element is not one of the tags we consider to be focusable, then exit  
+            // If the current potential element is not one of the tags we consider to be focusable, then exit
             return false;
         }
 
@@ -515,14 +510,14 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
         }
 
         if (elementTagName === "DIV" && element["winControl"] && element["winControl"].disabled) {
-            // Skip disabled WinJS controls  
+            // Skip disabled WinJS controls
             return false;
         }
 
         var style = getComputedStyle(element);
         if (element.getAttribute("tabIndex") === "-1" || style.display === "none" || style.visibility === "hidden" || element.disabled) {
-            // Skip elements that are hidden  
-            // Note: We don't check for opacity === 0, because the browser cannot tell us this value accurately.  
+            // Skip elements that are hidden
+            // Note: We don't check for opacity === 0, because the browser cannot tell us this value accurately.
             return false;
         }
         return true;
@@ -530,9 +525,9 @@ function _findNextFocusElementInternal(direction: string, options?: XYFocusOptio
 }
 
 function _defaultRect(): IRect {
-    // We set the top, left, bottom and right properties of the referenceBoundingRectangle to '-1'   
-    // (as opposed to '0') because we want to make sure that even elements that are up to the edge   
-    // of the screen can receive focus.  
+    // We set the top, left, bottom and right properties of the referenceBoundingRectangle to '-1'
+    // (as opposed to '0') because we want to make sure that even elements that are up to the edge
+    // of the screen can receive focus.
     return {
         top: -1,
         bottom: -1,
@@ -545,18 +540,18 @@ function _defaultRect(): IRect {
 
 function _toIRect(rect: IRect): IRect {
     return {
-        top: _Global.Math.floor(rect.top),
-        bottom: _Global.Math.floor(rect.top + rect.height),
-        right: _Global.Math.floor(rect.left + rect.width),
-        left: _Global.Math.floor(rect.left),
-        height: _Global.Math.floor(rect.height),
-        width: _Global.Math.floor(rect.width),
+        top: Math.floor(rect.top),
+        bottom: Math.floor(rect.top + rect.height),
+        right: Math.floor(rect.left + rect.width),
+        left: Math.floor(rect.left),
+        height: Math.floor(rect.height),
+        width: Math.floor(rect.width),
     };
 }
 
 function _trySetFocus(element: HTMLElement, keyCode: number) {
-    // We raise an event on the focusRoot before focus changes to give listeners  
-    // a chance to prevent the next focus target from receiving focus if they want.  
+    // We raise an event on the focusRoot before focus changes to give listeners
+    // a chance to prevent the next focus target from receiving focus if they want.
     var canceled = eventSrc.dispatchEvent(EventNames.focusChanging, { nextFocusElement: element, keyCode: keyCode });
     if (!canceled) {
         element.focus();
@@ -566,7 +561,7 @@ function _trySetFocus(element: HTMLElement, keyCode: number) {
 
 function _getIFrameFromWindow(win: Window) {
     var iframes = _Global.document.querySelectorAll("IFRAME");
-    var found = <Array<HTMLIFrameElement>>Array.prototype.filter.call(iframes, (x: HTMLIFrameElement) => x.contentWindow === win);
+    var found = <Array<HTMLIFrameElement>>Array.prototype.filter.call(iframes,(x: HTMLIFrameElement) => x.contentWindow === win);
     return found.length ? found[0] : null;
 }
 
@@ -589,7 +584,7 @@ function _handleKeyEvent(e: KeyboardEvent): void {
     }
 }
 
-_Global.addEventListener("message", (e: MessageEvent): void => {
+_Global.addEventListener("message",(e: MessageEvent): void => {
     if (!e.data || !e.data[CrossDomainMessageConstants.messageDataProperty]) {
         return;
     }
@@ -633,12 +628,12 @@ _Global.addEventListener("message", (e: MessageEvent): void => {
     }
 });
 
-_Global.document.addEventListener("DOMContentLoaded", () => {
+_Global.document.addEventListener("DOMContentLoaded",() => {
     if (_ElementUtilities.hasWinRT && _Global["Windows"] && _Global["Windows"]["Xbox"]) {
         enableXYFocus();
     }
 
-    // If we are running within an iframe, we send a registration message to the parent window  
+    // If we are running within an iframe, we send a registration message to the parent window
     if (_Global.top !== _Global.window) {
         var message = {};
         message[CrossDomainMessageConstants.messageDataProperty] = {
@@ -652,7 +647,6 @@ _Global.document.addEventListener("DOMContentLoaded", () => {
 
 // Publish to WinJS namespace
 var toPublish = {
-    keyCodeMap: keyCodeMap,
     focusRoot: {
         get: function () {
             return focusRoot;
@@ -665,7 +659,10 @@ var toPublish = {
     enableXYFocus: enableXYFocus,
     disableXYFocus: disableXYFocus,
     findNextFocusElement: findNextFocusElement,
+    keyCodeMap: keyCodeMap,
     moveFocus: moveFocus,
+    onfocuschanged: _Events._createEventProperty(EventNames.focusChanged),
+    onfocuschanging: _Events._createEventProperty(EventNames.focusChanging),
 
     _xyFocus: _xyFocus
 };

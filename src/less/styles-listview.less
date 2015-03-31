@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 
 @import "base.less";
 @import "mixins.less";
@@ -96,10 +96,10 @@
 }
 .win-listview .win-focusedoutline,
 .win-itemcontainer .win-focusedoutline {
-    width: ~"calc(100% + 4px)";
-    height: ~"calc(100% + 4px)";
-    left: -2px;
-    top: -2px;
+    width: ~"calc(100% - 4px)";
+    height: ~"calc(100% - 4px)";
+    left: 2px;
+    top: 2px;
     position: absolute;
     z-index: 5;
     pointer-events: none;
@@ -260,11 +260,12 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before
     position: absolute;
     margin: 0;
     padding: 2px;
-    right: 0;
-    top: 0;
-    font-family: "Segoe UI Symbol", "Symbols";
+    right: 1px;
+    top: 1px;
+    font-family: "Segoe MDL2 Assets", "Symbols";
     font-size: 14px;
     z-index: 4;
+    line-height: 1;
     display: none;
 }
 .win-rtl .win-selectioncheckmark {
@@ -345,9 +346,9 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before
     right: 12px;
 }
 .win-listview.win-selectionstylefilled .win-surface.win-selectionmode .win-selectioncheckmark {
-    left: 10px;
+    left: 13px;
     top: 50%;
-    margin-top: -11px;
+    margin-top: -8px;
     display: block;
     width: 14px;
     height: 14px;
@@ -408,12 +409,15 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before
 .win-listview .win-horizontal {
     .win-structuralnodes.win-single-itemsblock.win-listlayout .win-itemscontainer.win-laidout,
     .win-structuralnodes.win-single-itemsblock.win-gridlayout .win-uniformgridlayout.win-itemscontainer.win-laidout {
-        // Itemsblocks will already be styled as flexboxes elsewhere in the file. 
+        // Itemsblocks will already be styled as flexboxes elsewhere in the file.
         // Display the itemscontainer "block" since it will only contain one giant itemsblock.
         display: block;
 
+        // Padder must not be display:none so that it prevents the win-container's top margin from
+        // collapsing thru the win-itemscontainer during animations.
         .win-itemscontainer-padder {
-            display: none;
+            height: 0;
+            width: 0;
         }
     }
 }

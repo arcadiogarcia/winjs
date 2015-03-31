@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // Semantic Zoom control
 define([
     '../Core/_Global',
@@ -478,6 +478,7 @@ define([
 
                 _createSemanticZoomButton: function () {
                     this._sezoButton = _Global.document.createElement("button");
+                    this._sezoButton.setAttribute("type", "button");
                     this._sezoButton.className = sezoButtonClass + " " + sezoButtonLocationClass;
                     this._sezoButton.tabIndex = -1;
                     this._sezoButton.style.visibility = "hidden";

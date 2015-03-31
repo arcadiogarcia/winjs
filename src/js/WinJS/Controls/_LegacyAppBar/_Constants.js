@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 define([
      'exports',
      '../../Core/_Base',
@@ -7,24 +7,24 @@ define([
 
     _Base.Namespace._moduleDefine(exports, null, {
         // AppBar class names.
-        appBarClass: "win-appbar",
+        appBarClass: "win-navbar",
         firstDivClass: "win-firstdiv",
         finalDivClass: "win-finaldiv",
-        invokeButtonClass: "win-appbar-invokebutton",
-        ellipsisClass: "win-appbar-ellipsis",
+        invokeButtonClass: "win-navbar-invokebutton",
+        ellipsisClass: "win-navbar-ellipsis",
         primaryCommandsClass: "win-primarygroup",
         secondaryCommandsClass: "win-secondarygroup",
         commandLayoutClass: "win-commandlayout",
         menuLayoutClass: "win-menulayout",
         topClass: "win-top",
         bottomClass: "win-bottom",
-        showingClass : "win-appbar-showing",
-        shownClass : "win-appbar-shown",
-        compactClass : "win-appbar-compact",
-        hidingClass : "win-appbar-hiding",
-        hiddenClass: "win-appbar-hidden",
-        minimalClass: "win-appbar-minimal",
-        menuContainerClass: "win-appbar-menu",
+        showingClass : "win-navbar-opening",
+        shownClass : "win-navbar-opened",
+        hidingClass : "win-navbar-closing",
+        hiddenClass: "win-navbar-closed",
+        compactClass: "win-navbar-compact",
+        minimalClass: "win-navbar-minimal",
+        menuContainerClass: "win-navbar-menu",
 
         // Constants for AppBar placement
         appBarPlacementTop: "top",

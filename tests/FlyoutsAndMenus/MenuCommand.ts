@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 // <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
@@ -11,7 +11,7 @@ module CorsicaTests {
 
     var MenuCommand = <typeof WinJS.UI.PrivateMenuCommand> WinJS.UI.MenuCommand,
         Menu = <typeof WinJS.UI.PrivateMenu> WinJS.UI.Menu,
-        _Constants = Helper.require("WinJS/Controls/AppBar/_Constants");
+        _Constants = Helper.require("WinJS/Controls/_LegacyAppBar/_Constants");
 
     function verifyPropertyChangeDeactivatesFlyoutMenuCommand(property: string, value: any, msg: string) {
         return new WinJS.Promise((c) => {

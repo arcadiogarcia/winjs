@@ -1,6 +1,7 @@
 ﻿{
     "appBarAriaLabel": "App Bar",
     "appBarCommandAriaLabel": "App Bar Item",
+	"appBarOverflowButtonAriaLabel": "View more",
     "autoSuggestBoxAriaLabel": "Autosuggestbox",
     "autoSuggestBoxAriaLabelInputNoPlaceHolder": "Autosuggestbox, enter to submit query, esc to clear text",
     "autoSuggestBoxAriaLabelInputPlaceHolder": "Autosuggestbox, {0}, enter to submit query, esc to clear text",
@@ -14,6 +15,8 @@
     "backbuttonarialabel": "Back",
     "clearYourRating" : "Clear your rating",
     "closeOverlay" : "Close",
+    "commandingSurfaceAriaLabel": "CommandingSurface",
+    "commandingSurfaceOverflowButtonAriaLabel": "View more",
     "datePicker": "Date Picker",
     "flipViewPanningContainerAriaLabel": "Scrolling Container",
     "flyoutAriaLabel": "Flyout",
@@ -434,8 +437,10 @@
     "_appBarIcons\\threebars.comment":                  "{Locked:qps-ploc,qps-plocm}",
     "appBarIcons\\fourbars":                            "\uE1E9", //  group:System
     "_appBarIcons\\fourbars.comment":                   "{Locked:qps-ploc,qps-plocm}",
-    "appBarIcons\\scan":               			"\uE294", //  group:General
-    "_appBarIcons\\scan.comment":                   	"{Locked:qps-ploc,qps-plocm}",
-    "appBarIcons\\preview":            			"\uE295", //  group:General
-    "_appBarIcons\\preview.comment":                   	"{Locked:qps-ploc,qps-plocm}"
+    "appBarIcons\\scan":                                "\uE294", //  group:General
+    "_appBarIcons\\scan.comment":                       "{Locked:qps-ploc,qps-plocm}",
+    "appBarIcons\\preview":                             "\uE295", //  group:General
+    "_appBarIcons\\preview.comment":                    "{Locked:qps-ploc,qps-plocm}",
+    "appBarIcons\\hamburger":                           "\uE700", //  group:General
+    "_appBarIcons\\hamburger.comment":                  "{Locked:qps-ploc,qps-plocm}"
 }

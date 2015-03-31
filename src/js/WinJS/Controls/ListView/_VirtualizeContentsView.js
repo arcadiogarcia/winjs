@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 define([
     'exports',
     '../../Core/_Global',
@@ -2038,6 +2038,8 @@ define([
                     }
                 },
 
+                // Overridden by tests.
+                // Tests should have _createChunk return true when they want _createContainers to stop creating containers.
                 _createChunk: function VirtualizeContentsView_createChunk(groups, count, chunkSize) {
                     var that = this;
 
@@ -2091,6 +2093,8 @@ define([
                     this._listView._writeProfilerMark("createChunk,StopTM");
                 },
 
+                // Overridden by tests.
+                // Tests should have _createChunkWithBlocks return true when they want _createContainers to stop creating containers.
                 _createChunkWithBlocks: function VirtualizeContentsView_createChunkWithBlocks(groups, count, blockSize, chunkSize) {
                     var that = this;
                     this._listView._writeProfilerMark("createChunk,StartTM");
@@ -2305,6 +2309,8 @@ define([
                             chunkSize = Math.min(_VirtualizeContentsView._startupChunkSize, _VirtualizeContentsView._chunkSize);
                         var stop;
                         do {
+                            // Tests override _createChunk/_createChunkWithBlocks and take advantage of its boolean return value
+                            // to stop initial container creation after a certain number of containers have been created.
                             stop = blockSize ? that._createChunkWithBlocks(groups, count, blockSize, chunkSize) : that._createChunk(groups, count, chunkSize);
                         } while (_BaseUtils._now() < end && that.containers.length < count && !stop);
 

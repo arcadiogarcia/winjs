@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 
 
@@ -393,7 +393,7 @@ module CorsicaTests {
         {
             name: "allSortsOfCommasInArrayExpression",
             input: "[,,1, ,, 2, 3,,]",
-            result: [, , 1, , , 2, 3, , , ] // TS eats the last trailing comma https://github.com/Microsoft/TypeScript/issues/614
+            result: [, , 1, , , 2, 3, ,]
         },
     ];
 

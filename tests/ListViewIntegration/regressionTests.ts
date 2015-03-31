@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 // <reference path="ms-appx://$(TargetFramework)/css/ui-dark.css" />
 /// <reference path="../TestLib/Helper.ts" />
@@ -27,14 +27,12 @@ module WinJSTests {
 
 
         setUp() {
-            Helper.ListView.removeListviewAnimations();
             testRootEl = document.createElement("div");
             testRootEl.className = "file-listview-css";
             document.body.appendChild(testRootEl);
         }
 
         tearDown() {
-            Helper.ListView.restoreListviewAnimations();
             WinJS.Utilities.disposeSubTree(testRootEl);
             document.body.removeChild(testRootEl);
         }
@@ -403,7 +401,6 @@ module WinJSTests {
 
 
         testWin8_769820 = function (complete) {
-            Helper.ListView.restoreListviewAnimations();
 
             var items = [],
                 tiles = [];

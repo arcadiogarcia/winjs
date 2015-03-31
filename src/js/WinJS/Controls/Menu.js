@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // Menu
 /// <dictionary>Menu,Menus,Flyout,Flyouts,Statics</dictionary>
 define([
@@ -13,7 +13,7 @@ define([
     '../Utilities/_ElementUtilities',
     '../Utilities/_Hoverable',
     '../Utilities/_KeyboardBehavior',
-    './AppBar/_Constants',
+    './_LegacyAppBar/_Constants',
     './Flyout',
     './Flyout/_Overlay',
     './Menu/_Command'
@@ -368,15 +368,14 @@ define([
                 },
 
                 _handleCommandInvoked: function Menu_handleCommandInvoked(event) {
+                    // Cascading Menus hide when invoking a command commits an action, not when invoking a command opens a subFlyout.
                     if (this._hoverPromise) {
                         // Prevent pending duplicate invoke triggered via hover.
                         this._hoverPromise.cancel();
                     }
-
-                    // Menu hides when invoking a command commits an action, not when a subFlyout is invoked.
                     var command = event.detail.command;
-                    if (command._type !== _Constants.typeFlyout) {
-                        this._hide();
+                    if (command._type !== _Constants.typeFlyout && command._type !== _Constants.typeSeparator) {
+                        this._lightDismiss(); // Collapse all Menus/Flyouts.
                     }
                 },
 

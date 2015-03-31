@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // <reference path="ms-appx://$(TargetFramework)/js/WinJS.js" />
 /// <reference path="../TestLib/Helper.ts" />
 ///<reference path="../../typings/typings.d.ts" />
@@ -3151,7 +3151,7 @@ module CorsicaTests {
 
             // Query the system for Localized "'x' of undefined or null reference"
             var errorText = "'x' of undefined or null reference";
-            try { null.x(); }
+            try { thisVariableNotDefined.x(); }
             catch (e) {
                 errorText = e.message;
             }
@@ -3182,7 +3182,7 @@ module CorsicaTests {
                     })
                     .done(function () {
                         // next line is an intentional reference error
-                        null.x();
+                        thisVariableNotDefined.x();
                     })
 
                 LiveUnit.Assert.areEqual(0, count);

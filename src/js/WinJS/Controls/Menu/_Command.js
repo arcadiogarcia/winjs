@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
 // Menu Command
 /// <dictionary>appbar,appbars,Flyout,Flyouts,onclick,Statics</dictionary>
 define([
@@ -10,7 +10,7 @@ define([
     '../../Promise',
     '../../Utilities/_Control',
     '../../Utilities/_ElementUtilities',
-    '../AppBar/_Constants',
+    '../_LegacyAppBar/_Constants',
     '../Flyout/_Overlay'
 ], function menuCommandInit(exports, _Global, _Base, _ErrorFromName, _Resources, Promise, _Control, _ElementUtilities, _Constants, _Overlay) {
     "use strict";
@@ -40,7 +40,7 @@ define([
             };
 
             var MenuCommand = _Base.Class.define(function MenuCommand_ctor(element, options) {
-                /// <signature helpKeyword="WinJS.UI.AppBarCommand.MenuCommand">
+                /// <signature helpKeyword="WinJS.UI.MenuCommand.MenuCommand">
                 /// <summary locid="WinJS.UI.MenuCommand.constructor">
                 /// Creates a new MenuCommand object.
                 /// </summary>
@@ -511,7 +511,7 @@ define([
 
                 _deactivateFlyoutCommand: function MenuCommand_deactivateFlyoutCommand(menuCommand) {
                     // Deactivates the associated Flyout command and returns a promise once complete.
-                    // A command is considered to be deactivated once the proper CSS class has been applied and its associated flyout has finished hiding. 
+                    // A command is considered to be deactivated once the proper CSS class has been applied and its associated flyout has finished hiding.
                     return new Promise(function (c) {
                         menuCommand = menuCommand.winControl || menuCommand;
                         _ElementUtilities.removeClass(menuCommand.element, _Constants.menuCommandFlyoutActivatedClass);
